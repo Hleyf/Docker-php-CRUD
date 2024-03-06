@@ -21,7 +21,6 @@
         $query = "UPDATE task set title = '$title', description = '$description' WHERE id = $id";
         $result = mysqli_query($db_connection, $query);
 
-        // $_SESSION['message'] = 'Task "' . $title . '" Updated Successfully';
         $_SESSION['message'] = 'Task ' . $_GET['id'] . ' Updated Successfully';
         $_SESSION['message_type'] = 'warning';
         header("Location: ../index.php");
