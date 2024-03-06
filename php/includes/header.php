@@ -11,8 +11,14 @@
 </head>
 <body>
 
+<?php
+    if(isset($_SESSION['user_id'])){
+?>
+
 <nav class="navbar navbar-dark bg-dark">
     <div class="container">
         <a href="index.php" class="navbar-brand">PHP MySQL CRUD</a>
     </div>
 </nav>
+
+<?php } ?>
