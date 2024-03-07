@@ -9,7 +9,9 @@
                     <?= $_SESSION['message'] ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            <?php session_unset();
+            <?php 
+                unset($_SESSION['message']);
+                unset($_SESSION['message_type']);
             } ?>
             <div class="card card-body">
                 <form action="../../crud/save_task.php" method="POST">
