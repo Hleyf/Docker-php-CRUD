@@ -1,6 +1,44 @@
 version: '3'
 services:
   php-apache:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
     volumes:
-      - ./php:/var/www/html  # Mount the application code
-
+      - ./php:/var/www/html
+    ports:
+      - 80:80
+    networks:
+      - php-crud-network
+    depends_on:
+      - db
+  db:
+    image: mysql
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ROOT_PASSWORD
+      MYSQL_DATABASE: php_mysql_crud
+      MYSQL_USER: user
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - php-crud-network
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    networks:
+      - php-crud-network
+    ports:
+      - 8080:80
+volumes:
+  db-data:
+networks:
+  php-crud-network:
