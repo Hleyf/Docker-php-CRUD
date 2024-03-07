@@ -3,8 +3,6 @@
 
     $userName = $password = "";
 
-    global $loggedUser;
-
     //form validation
     if ($_SERVER["REQUEST_METHOD"] == "GET"){
         
@@ -13,13 +11,13 @@
         $query = "SELECT * FROM user WHERE userName = '$userName'";
         $result = mysqli_query($db_connection, $query);
         if(mysqli_num_rows($result) == 1){
-            validateUserPassword($result, $userName, $password);
+            validateUserPassword($result, $password);
         }else {
             $_SESSION["userNameErrMessage"] = "User Name does not exist";
             backToLogin();
         }
     }
-
+    // form validation function. username and password are passed by reference.
     function validateForm(&$userName, &$pasword){
         if (empty($_GET["userName"])) {
             $_SESSION["userNameErrMessage"] = "User Name is required";
@@ -36,14 +34,20 @@
         }
     }
     
-    function validateUserPassword($result, &$userName, $pasword){
+    function validateUserPassword($result, $pasword){
         $row = mysqli_fetch_assoc($result);
         if(password_verify($pasword, $row['password'])){
-            $user = new stdClass(); //TODO: create a user class
-            $user->userName = $row['user_name'];
-            $user->id = $row['id'];
+            // Regenerate the session ID after successful login to prevent session fixation attacks.
+            session_regenerate_id();
             
-            $_SESSION["user"] = $user;            
+            $user = new stdClass(); //TODO: create a user class
+            $user->id = $row['id'];
+            $user->userName = $row['user_name'];
+            
+            //user is stored in session after being validated. 
+            //TODO: "remmember me" is not implemented since user won't persiste after session ends.
+            $_SESSION["user"] = $user; 
+
             header("Location: ../../pages/task/task_main.php");
         }else{
             $_SESSION["passwordErrMessage"] = "Password is incorrect";
@@ -58,7 +62,7 @@
         $data = htmlspecialchars($data);
         return $data;
     }
-
+    // Just an easy way to redirect to the login page in case of error. Error messages must be stored in the session before calling it.
     function backToLogin(){
         header("Location: ../../pages/auth/login.php");
     }
