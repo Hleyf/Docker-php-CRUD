@@ -1,44 +1,55 @@
 <?php
     require_once 'db.php';
 
-    $email = $userName = $pasword = "";
+    $userName = $password = "";
+
+    global $loggedUser;
 
     //form validation
     if ($_SERVER["REQUEST_METHOD"] == "GET"){
-        if (empty($_GET["email"])) {
-            $_SESSION["emailErrMessage"] = "Email is required";
-            backToLogin();
-        } 
-        $email = test_input($_GET["email"]);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $_SESSION["emailErrMessage"] = "Invalid email format";
-            backToLogin();        
-        }
         
-        if (empty($_GET["userName"])) {
-            $_SESSION["userNameErrMessage"] = "User Name is required";
-            backToLogin();
-        } else {
-            $userName = test_input($_GET["userName"]);
-        }
-
-        if (empty($_GET["password"])) {
-            $_SESSION["passwordErrMessage"] = "Password is required";
-            backToLogin();
-        } else {
-            $pasword = password_hash($_POST["password"], PASSWORD_DEFAULT);
-        }
+        validateForm($userName, $password);
 
         $query = "SELECT * FROM user WHERE userName = '$userName'";
         $result = mysqli_query($db_connection, $query);
         if(mysqli_num_rows($result) == 1){
-            
+            validateUserPassword($result, $userName, $password);
         }else {
             $_SESSION["userNameErrMessage"] = "User Name does not exist";
             backToLogin();
         }
     }
 
+    function validateForm(&$userName, &$pasword){
+        if (empty($_GET["userName"])) {
+            $_SESSION["userNameErrMessage"] = "User Name is required";
+            backToLogin();
+        } else {
+            $userName = test_input($_GET["userName"]);
+        }
+    
+        if (empty($_GET["password"])) {
+            $_SESSION["passwordErrMessage"] = "Password is required";
+            backToLogin();
+        } else {
+            $pasword = password_hash($_POST["password"], PASSWORD_DEFAULT);
+        }
+    }
+    
+    function validateUserPassword($result, &$userName, $pasword){
+        $row = mysqli_fetch_assoc($result);
+        if(password_verify($pasword, $row['password'])){
+            $user = new stdClass(); //TODO: create a user class
+            $user->userName = $row['user_name'];
+            $user->id = $row['id'];
+            
+            $_SESSION["user"] = $user;            
+            header("Location: ../../pages/task/task_main.php");
+        }else{
+            $_SESSION["passwordErrMessage"] = "Password is incorrect";
+            backToLogin();
+        }
+    }
 
     
     function test_input($data) {
