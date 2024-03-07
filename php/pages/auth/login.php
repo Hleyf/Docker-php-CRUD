@@ -2,17 +2,17 @@
 
 <div class="d-flex justify-content-center align-items-center vh-100 vw-100">
     <div class="container p-4  shadow" style="width: 400px;">
-        <form>
+        <form action="../../crud/login_user.php" method="GET" >
             <!-- Email input -->
             <div class="form-outline mb-4">
-                <input type="email" id="form2Example1" class="form-control" />
-                <label class="form-label" for="form2Example1">Email address</label>
+                <input type="text" name="userName" class="form-control" placeholder="User Name" />
+                <!-- <label class="form-label" for="form2Example1">Email address</label> -->
             </div>
             
             <!-- Password input -->
             <div class="form-outline mb-4">
-                <input type="password" id="form2Example2" class="form-control" />
-                <label class="form-label" for="form2Example2">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Password" />
+                <!-- <label class="form-label">Password</label> -->
             </div>
             
             <!-- 2 column grid layout for inline styling -->
@@ -32,7 +32,7 @@
             </div>
             
             <!-- Submit button -->
-            <button type="button" class="btn btn-primary btn-block mb-4">Sign in</button>
+            <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
             
             <!-- Register buttons -->
             <div class="text-center">

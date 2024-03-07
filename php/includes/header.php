@@ -12,7 +12,7 @@
 <body>
 
 <?php
-    if(isset($_SESSION['user']['id'])){
+    if(isset($_SESSION['user']->id)){
 ?>
 
 <nav class="navbar navbar-dark bg-dark">
