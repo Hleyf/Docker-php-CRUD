@@ -1,3 +1,9 @@
+<?php
+if (!isset($_SESSION['user']->id)) {
+    header("Location: ../../pages/auth/login.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
