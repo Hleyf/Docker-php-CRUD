@@ -5,11 +5,29 @@
     <div class="row">
         <div class="col-md-4">
             <?php if (isset($_SESSION['message'])) { ?>
-                <div class="alert alert-<?= $_SESSION['message_type']; ?> alert-dismissible fade show" role="alert">
+                <div id="alert" class="alert alert-<?= $_SESSION['message_type']; ?> alert-dismissible fade show" role="alert" onmouseenter="resetTimeout()" onmouseleave="startTimeout()">
                     <?= $_SESSION['message'] ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            <?php session_unset();
+
+                <script>
+                    var timeoutId;
+
+                    function startTimeout() {
+                        timeoutId = setTimeout(function() {
+                            document.getElementById('alert').style.display = 'none';
+                        }, 5000);
+                    }
+
+                    function resetTimeout() {
+                        clearTimeout(timeoutId);
+                    }
+
+                    startTimeout();
+                </script>
+            <?php
+                unset($_SESSION['message']);
+                unset($_SESSION['message_type']);
             } ?>
             <div class="card card-body">
                 <form action="../../crud/save_task.php" method="POST">
